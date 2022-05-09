@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>익스프레스 서버</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>로그인</h1>
+    <form id="form" action="/login" method="post">
+        <input id="name" name="name" placeholder="아이디를 입력하세요" />
+        <input type="password" id="pw" name="pw" placeholder="패스워드를 입력하세요" />
+        <button type="submit">로그인</button>
+    </form>
+    <div id="list"></div>
+
+    <script type="text/javascript">
+        
+        document.getElementById('form').addEventListener( 'submit', (e)=>{
+            const name = e.target.name.value; 
+            const pw = e.target.pw.value; 
+            
+            if(name!='scott'){
+                const list = document.getElementById('list');
+                    const string = '아이디가 없습니다';
+
+                    console.log('string' + string);
+                    const userDiv = document.createElement('div'); 
+                    const span = document.createElement('span'); 
+                    span.textContent = string;
+
+
+                    userDiv.appendChild(span);
+                    
+                    list.appendChild(userDiv);
+            }else if(pw!='tiger'){
+                const list = document.getElementById('list');
+                    const string = '비밀번호가 맞지 않습니다';
+
+                    console.log('string' + string);
+                    const userDiv = document.createElement('div'); 
+                    const span = document.createElement('span'); 
+                    span.textContent = string;
+
+
+                    userDiv.appendChild(span);
+                    
+                    list.appendChild(userDiv);
+            }
+        } );
+    </script>
+</body>
+</html>
