@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div>
+        <form id="post-form" method="post" enctype="multipart/form-data">
+            <div class="input-group">
+                <textarea id="post" name="content" maxlength="140"></textarea>
+            </div>
+            <!-- 이미지 미리보기 -->
+            <div class="img-preview">
+                <img id="img-preview" src="" style="display:none;" width="250" alt="미리보기">
+                <input id="img-url" type="hidden" name="url">
+            </div>
+            <div>
+                <label id="img-label" for="img">사진 업로드</label>
+                <input id="img" type="file">
+                <button id="post-btn" type="submit" class="btn">전송</button>
+            </div>
+        </form>
+    </div>
+    <table id="post-list"><tbody></tbody></table>
+{% endblock %}
+
+{% block script%}
+    <script type="text/javascript">
+
+async function getPost(){
+    try{
+        const res = await axios.get('/post');
+        const posts = res.data;
+        const tbody = document.querySelector('#post-list tbody');
+        
+        tbody.innerHTML = ''; 
+        posts.map(function(post){
+            let row = document.createElement('tr');
+            let td = document.createElement('td');
+            td.textContent = post.User.nick;
+            row.appendChild(td); 
+            tbody.appendChild(row);
+            
+            row = document.createElement('tr');
+            td = document.createElement('td');
+            let img = document.createElement('img');
+            img.setAttribute('src', `img/${post.img}`);
+            img.style.width='350px';
+            td.appendChild(img); 
+            row.appendChild(td); 
+            tbody.appendChild(row);
+            
+            row = document.createElement('tr');
+            td = document.createElement('td');
+            td.textContent = post.content;
+            row.appendChild(td); 
+            tbody.appendChild(row);
+
+            row = document.createElement('tr');
+            td = document.createElement('td');
+            hr = document.createElement('hr');
+            td.appendChild(hr);
+            row.appendChild(td); 
+            tbody.appendChild(row);
+            
+        });
+    }catch(err){
+        console.error(err);
+    }
+};
+        
+document.getElementById('post-form').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const content=e.target.content.value;
+    if(!content) { return alert('내용을 입력하세요');}
+   
+    const formData = new FormData();
+
+    formData.append('img', e.target.img.files[0]);
+    formData.append('content', content);
+    try{
+        await axios.post('/post/posting', formData);
+        getPost();
+    }catch(err){
+
+    }
+});
+    </script>
+{% endblock %}

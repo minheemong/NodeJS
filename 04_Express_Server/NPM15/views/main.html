@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="timeline">
+    {% if user %}
+        <div>
+            <form id="post-form" action="/post" method="post" enctype="multipart/form-data">
+                <div class="input-group">
+                    <textarea id="post" name="content" maxlength="140"></textarea>
+                </div>
+                <!-- 이미지 미리보기 -->
+                <div class="img-preview">
+                    <img id="img-preview" src="" style="display:none;" width="250" alt="미리보기">
+                    <input id="img-url" type="hidden" name="url">
+                </div>
+                <div>
+                    <label id="img-label" for="img">사진 업로드</label>
+                    <input id="img" type="file" accept="image/*">
+                    <button id="post-btn" type="submit" class="btn">전송</button>
+                </div>
+            </form>
+        </div>
+    {% endif %}
+    <div class="twits">
+        <form id="hashtag-form" action="/hashtag">
+            <input type="text" name="hashtag" placeholder="태그 검색">
+            <button class="btn">검색</button>
+        </form>
+        {% for post in posts %}
+            <div class="twit">
+                <!-- 아이디, 닉네임 -->
+                <input type="hidden" value="{{post.id}}" class="twit-id">
+                <input type="hidden" value="{{post.UserId}}" class="twit-user-id">
+                <div class="twit-author" style="font-weight:bold; font-family:Verdana;">
+                    {{post.id}} &nbsp;-&nbsp; {{post.User.nick}}
+                </div>
+                {% if not followerIdList.includes(post.User.id) and post.User.id !== user.id %}
+                    <button class="twit-follow">팔로우하기</button><br><br>
+                {% endif %}
+                <!-- 이미지 -->
+                {% if post.img %}
+                <div class="twit-img"><img src="{{post.img}}"></div><br>
+                {% endif %}
+                <!-- content -->
+                <div class="twit-content">{{post.content}}</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+ 
+
+
+{% block script %}
+    <script type="text/javascript">
+        if(document.getElementById('img')){
+            document.getElementById('img').addEventListener('change', e=>{
+                const formData = new FormData();
+                formData.append('img', e.target.files[0]);
+                axios.post('/post/img', formData)
+                .then((res)=>{
+                    document.getElementById('img-url').value = res.data.url; // 히든 태그에 url 대입
+                    document.getElementById('img-preview').src = res.data.url; // 미리보기 태그 src 삽입
+                    document.getElementById('img-preview').style.display = 'inline'; // 미리보기
+                })
+                .catch((err=>{console.error(err);}));
+            });
+        }
+
+        // class가 twit-follow인 셀렉터 모두 선택 후 ->  그 태그들을 하나씩 tag에 전달하며 익명함수 실행
+        document.querySelectorAll('.twit-follow').forEach(function(tag){
+            // 현재 tag(class가 twit-follow인 셀렉터 중 하나)에 클릭이벤트함수 설정
+            tag.addEventListener('click', function(){
+                const myid = document.querySelector('#my-id'); // layout.html // 로그인한 사람
+                if( myid ){ // 로그인한 상태로 myid가 존재할 때에만
+                    const userId = tag.parentNode.querySelector('.twit-user-id').value; // 게시물의 작성자
+                    if(userId!==myid.value){ // 로그인 유저와 작성자가 같지 않다면 실행
+                        const answer = confirm('팔로우하시겠습니까?');
+                        if(answer){
+                            // 로그인 유저가 현재 게시물의 작성자를 팔로우
+                            axios.post(`/user/follow/${userId}`)
+                            .then(()=>{
+                                location.reload();
+                            })
+                            .catch((err)=>{
+                                console.error(err);
+                            });
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock%}
