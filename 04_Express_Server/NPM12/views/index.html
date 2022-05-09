@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Welcome to Express nunjucks</title>
+</head>
+<body>
+    <h1>Welcome to {{title}} nunjucks</h1>
+    <br><hr>
+    <!-- 내부변수 -->
+    {%set node = 'Node - JS'%}
+    {%set js = 'JavaScript'%}
+    <h3>{{node}}와 {{js}}</h3>
+    <br><hr>
+    <!-- 꺽쇠괄호 -->
+    <h3>{{'<strong>이스케이프</strong>'}}</h3>
+    <h3>{{'<strong>이스케이프 하지 않음</strong>' | safe}}</h3>
+    <br><hr>
+    <!-- 반복문 - 중괄호퍼센트 안에 for in 작성. index는 loop.index -->
+    {%set fruits=['사과', '배', '오렌지', '바나나', '복숭아']%}
+    <ul>
+        {%for item in fruits%}
+            <li>{{item}}</li>
+        {%endfor%}
+    </ul>
+
+    <ul>
+        {%for item in fruits%}
+            <li>{{loop.index}}번째 {{item}}</li>
+        {%endfor%}
+    </ul>
+    <br><hr>
+    <!-- 조건문 -->
+    {%set isLogged=true%}
+    {%if isLogged%}
+    <h3>로그인 되었습니다</h3>
+    {%else%}
+    <h3>로그인이 필요합니다</h3>
+    {%endif%}
+
+    {%set fruit = ''%}
+    {%if fruit === 'apple'%}
+    <h3>사과입니다</h3>
+    {%elif fruit === 'banana'%}
+    <h3>바나나입니다</h3>
+    {%elif fruit === 'orange'%}
+    <h3>오렌지입니다</h3>
+    {%else%}
+    <h3>아무것도 아닙니다</h3>
+    {%endif%}
+</body>
+</html>

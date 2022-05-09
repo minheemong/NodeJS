@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form id="form" method="post" enctype="multipart/form-data">
+        <table border="1">
+            <tr><td>제목</td><td><input type="text" name="title"></td></tr>
+            <tr><td>설명</td><td><input type="text" name="description"></td></tr>
+            <tr><td>가격</td><td><input type="text" name="price"></td></tr>
+            <tr><td>이미지</td><td><input type="file" name="image"></td></tr>
+            <tr><td colspan="2"><input type="submit" value="전송"></td></tr>
+        </table>
+    </form><br />
+    <table border="1">
+        <tr><td>제목<td><div id="title">&nbsp;</div></td></tr>
+        <tr><td>실명<td><div id="description">&nbsp;</div></td></tr>
+        <tr><td>가격<td><div id="price">&nbsp;</div></td></tr>
+        <tr><td>이미지<td><div id="img">&nbsp;</div></td></tr>
+
+    </table>
+<!-- 1.서버가 시작되면 첫 페이지로 현재 파일이 화면에 표시되도록 해주세요
+    2. 위쪽 테이블의 내용을 이용하여 파일을 업로드하고, 다시 돌아와서 아래쪽 표에 입력한 내용을 각 div에 넣어주세요. 
+    img div는 가로크기 400의 이미지를 넣어주세요. 
+    3. 위쪽 테이블의 입력란은 모두 비워주세요 -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+        document.getElementById('form').addEventListener('submit', async (e)=>{ // 매개변수 이름 아무거나 가능
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('title', e.target.title.value);
+        formData.append('description', e.target.description.value);
+        formData.append('price', e.target.price.value);
+        formData.append('image', e.target.image.files[0]);
+        try{
+            const res = await axios.post('/upload', formData);
+            document.getElementById("title").innerHTML =  res.data.title; 
+            document.getElementById("description").innerHTML =  res.data.description; 
+            document.getElementById("price").innerHTML =  res.data.price; 
+            document.getElementById("img").innerHTML = '<img src="' + res.data.filename + '" width=400/>';
+        }catch(err){
+            console.error(err);
+        }
+        e.target.title.value='';
+        e.target.description.value='';
+        e.target.price.value='';
+        e.target.image.value='';
+    });
+    </script>
+</body>
+</html>

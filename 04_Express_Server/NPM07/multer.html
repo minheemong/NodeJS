@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form id="form" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" />
+        <input type="text" name="title" />
+        <button type="submit">업로드</button>
+        <div id="filename"></div>
+        <div id="message"></div>
+        <div id="image"></div>
+    </form>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+        document.getElementById('form').addEventListener('submit', async (e)=>{ // 매개변수 이름 아무거나 가능
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('image', e.target.image.files[0]);
+            formData.append('title', e.target.title.value);
+            try{
+                const res = await axios.post('/upload', formData); // 완성된 폼 객체를 /upload request로 전송
+                document.getElementById("message").innerHTML = '제목 : '+ res.data.title; 
+                //'파일이 업로드 되었습니다';//msg.data; // 왜 데이터를 넣지
+                document.getElementById("filename").innerHTML = '업로드된 파일의 저장 이름 : ' + res.data.filename;//msg.data; // 왜 data를 넣지
+                document.getElementById("image").innerHTML = '<img src="' + res.data.filename + '" width=200/>';//msg.data; // 왜 data를 넣지
+            }catch(err){
+                console.error(err);
+            }
+            e.target.image.value='';
+            e.target.title.value='';
+        });
+    </script> 
+</body>
+</html>

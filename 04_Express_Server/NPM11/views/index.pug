@@ -1,0 +1,75 @@
+// 퍼그의 기본 문법 1 : <, >가 태그에 쓰여지지 않습니다
+// 들여쓰기가 끝나는 곳에서 태그가 끝납니다
+
+html
+    head
+        title=title
+        link(rel='stylesheet', href='/style.css')
+    body
+        // 한 줄에 내용까지 모두 작성한 태그는 줄이 바뀌면 태그가 끝납니다. 
+        h1 Welcome to #{title}
+        // <h1>Welcome to ...</h1>
+        h2 Pug를 학습합니다.
+        // <h2>Pug를 학습합니다.</h2>
+        br
+        hr
+        // 태그에 이름을 쓰지 않고 # 또는 .으로 시작할 때 id, class를 지정한 div 태그가 생성됩니다.
+        #login-id id가 'login-id'인 div 태그
+        .login-pw class가 'login-pw'인 div 태그
+        br
+        hr
+
+        // 특정 태그에 id class를 지정하려면 아래와 같이 태그 이름과 . 또는 #을 이어서 작성합니다
+        span#highlight 
+            h2 id가 highlight인 span 태그
+        p.hidden.full 
+            h2 class가 hidden과 full이라는 클래스가 동시 적용된 p태그 
+        br
+        hr
+
+        //스타일 태그 및 스크립트 태그
+        style.
+            h1{
+                color:red;
+            }
+        //script.
+        //    const message='Express & Pug';
+        //    alert(message);
+
+        // 파일 내부의 변수
+        - const node = "Node_js";
+        - const js = "JavaScript";
+        p   
+            h2 #{node}와 #{js}
+        br
+        hr
+
+        // 반복문
+        ul  
+            each fruit in ['사과', '배', '오렌지', '바나나']
+                li=fruit
+        hr
+        ul 
+            each fruit, index in ['사과', '배', '오렌지', '바나나']
+                li=(index+1)+'번째 '+fruit
+        br
+        hr
+
+        // 조건문
+        - const idLoggedIn=1;
+        if idLoggedIn   
+            h2 로그인 되었습니다
+        else 
+            h2 로그인이 필요합니다
+        // elseif -> elif로 표현합니다
+
+        - const fruit = 'orange';
+        case fruit 
+            when 'apple'
+                h2 사과
+            when 'banana'
+                h2 바나나
+            when 'orange'
+                h2 오렌지
+            default 
+                h2 사과도 바나나도 오렌지도 아닙니다

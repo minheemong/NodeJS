@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form method="post" id="form" >
+        <input type="text" name="id"><br />
+        <input type="password" name="pw"><br />
+        <input type="submit" value="로그인"><br />
+        <div id="message"></div>
+    </form>
+    
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="text/javascript">
+        document.getElementById('form').addEventListener('submit', async (e)=>{ 
+            e.preventDefault();
+            const id = e.target.id.value;
+            const pw = e.target.pw.value;
+
+            if(id==''){
+                alert('이름을 입력하세요');
+                return;
+            }else if(pw==''){
+                alert('비밀번호를 입력하세요');
+                return;
+            }
+            try{
+                const res = await axios.post('/login', {id, pw});
+                if(res.data=='ok') location.href='/';
+                document.getElementById('message').innerHTML = res.data;
+            }catch(err){
+                console.error(err);
+            }
+            e.target.id.value=''; 
+            e.target.pw.value=''; 
+        });
+    </script> 
+</body>
+</html>
