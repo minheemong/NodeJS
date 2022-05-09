@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <script src="https://unpkg.com/axios@0.25.0/dist/axios.min.js"></script> 
+    <!-- 자바스크립트가 이 뒤에 들어가면 자바스크립트가 실행되고 바디가 실행되어 alert 동작 후 입력이 돌아오지 않습니다 -->
+</head>
+<body>
+    <form method="post" id="form">
+        <input type="text" name="id"><br />
+        <input type="password" name="pw"><br />
+        <input type="submit" value="로그인"><br />
+        <div id="message"></div>
+    </form>
+
+    <script type="text/javascript">
+        document.getElementById("form").addEventListener('submit', async (e)=>{
+            e.preventDefault(); // form의 submit 동작을 멈춥니다. 동작을 멈추지 않으면, submit이 끝까지 진행되어 화면이 바뀌고, 목적한 일을 할 수 없습니다. 다른 방법으로 submit을 진행하려고 멈춥니다.
+
+            const id = e.target.id.value;
+            const pw = e.target.pw.value;
+
+            if(id==''){
+                alert('이름을 입력하세요');
+                return;
+            }else if(pw==''){
+                alert('비밀번호를 입력하세요');
+                return;
+            }
+            try{
+                const res = await axios.post('/login', {id, pw});
+                if(res.data.msg=='ok') location.href='/';
+                document.getElementById('message').innerHTML = res.data.msg;
+            }catch(err){
+                console.error(err);
+            }
+            e.target.id.value=''; //document.form 도 가능
+            e.target.pw.value=''; 
+        });
+
+    </script>
+</body>
+</html>
